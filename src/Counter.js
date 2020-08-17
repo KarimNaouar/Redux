@@ -1,46 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import { decrement  } from "./actions/decAction";
+import { increment  } from "./actions/incAction";
+import { reset  } from "./actions/resetAction";
+import { step } from "./actions/stepActions";
 const Counter = (props) => {
   console.log(props);
-
-  const increment = () => {
-    props.dispatch({ type: "INCREMENT" });
-  };
-
-  const decrement = () => {
-    props.dispatch({ type: "DECREMENT" });
-  };
-
-  const reset = () => {
-    props.dispatch({ type: "RESET" });
-  };
-
-  const step1 = () => {
-    props.dispatch({ type: "STEP1" });
-  };
-
-  const step10 = () => {
-    props.dispatch({ type: "STEP10" });
-  };
-
-  const step50 = () => {
-    props.dispatch({ type: "STEP50" });
-  };
-
   return (
-    <div className="counter">
+    <div className="counter" style={{ display:"flex", flexDirection:"column",  alignItems:"center"}}>
       <h2>Counter</h2>
-      <div>
+      <div style={{ display:"flex", flexDirection:"column",  alignItems:"center"}}>
         <label name="step">Choose the step: </label>
         <select
           id="step"
           name="step"
-          onChange={(e) => {
-            e.target.value === "1" && step1();
-            e.target.value === "10" && step10();
-            e.target.value === "50" && step50();
-          }}
+          onChange={(e) => props.setStep(+e.target.value)}
         >
           <option value="1">1</option>
           <option value="10">10</option>
@@ -48,11 +22,11 @@ const Counter = (props) => {
         </select>
         <p />
 
-        <button onClick={() => decrement()}>-</button>
+        <button onClick={props.increment}>+</button>
         <span className="count">{props.count}</span>
-        <button onClick={() => increment()}>+</button>
+        <button onClick= {props.decrement}>-</button>        
         <p>
-          <button onClick={() => reset()}>Reset</button>
+          <button onClick={props.reset}>Reset</button>
         </p>
       </div>
     </div>
@@ -60,11 +34,20 @@ const Counter = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  console.log(state);
+//  console.log(state);
   return {
-    count: state.count,
-    step: state.step,
+    count: state.counterReducer.count,
+    step: state.counterReducer.step,
   };
 };
 
-export default connect(mapStateToProps)(Counter);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    increment: () => dispatch(increment()),
+    decrement: () => dispatch(decrement()),
+    reset: () => dispatch(reset()),
+    setStep: (x) => dispatch(step(x)),
+  };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(Counter);
